@@ -1,43 +1,62 @@
-# 配送日报自动生成技能
+# 配送骑手日报生成器
 
-> OpenClaw 技能 — dispatcher-data-analysis
+自动分析 Aeolus 实时出勤数据，生成骑手当日业绩达标报告（.xlsx）
 
-## 功能
+## 这是干嘛的
 
-从 Aeolus 实时出勤数据生成完整的配送日报 Excel（六板块）：
+每天从 Aeolus 导出实时出勤数据，一键算清楚：
 
-| 板块 | 内容 |
-|:----:|:----:|
-| 全天达成 | 基线达标/未达标骑手统计 |
-| 时段未达标 | 9个时段出勤率、达标率分析 |
-| 档位达成 | 标准0~5档位分布+接近升级骑手 |
-| 重点跟进 | 冲三档+全部升档机会+汇总 |
-| 0-2档不够明细 | 低档骑手到下一档差距 |
-| 档位明细 | 0~4档每位骑手晋升差距 |
+- **今天排班多少人、多少人达标、谁没达标**
+- **9个时段出勤率和达标率** — 早高峰、午高峰、晚高峰、夜宵等
+- **档位分布** — 标准5到不足标准1各档多少人
+- **谁差一点就能升档** — 差1单、差2单、差几分钟的明细
+- **谁有冲三档机会** — 标准2骑手里最有希望冲上标准3的
+
+输出一份完整 Excel，站长直接能看。
+
+## 数据来源
+
+从 Aeolus 网页手动导出：
+- 实时出勤数据 → `~/Downloads/2026-MM-DD_HH_MM_SS实时出勤数据.xlsx`
+- 排班数据 → `~/Downloads/2026-MM-DD到2026-MM-DD排班数据.xlsx`
+
+脚本自动取 `~/Downloads/` 里最新的文件。
 
 ## 使用方法
 
 ```bash
-# 1. 从 Aeolus 网页导出实时出勤 Excel 到 ~/Downloads/
-
-# 2. 生成日报
+# 生成日报
 cd ~/.openclaw/workspace/data-analyst
 python3 generate_report.py
 
-# 3. 验证报告
+# 验证报告格式
 python3 validate_report.py
 ```
 
-输出位置：`~/Desktop/配送日报_{日期}.xlsx`
+输出：`~/Desktop/配送日报_MM-DD.xlsx`
 
-## 脚本说明
+## 核心脚本
 
-| 文件 | 说明 |
+| 文件 | 作用 |
 |:----|:----:|
-| `generate_report.py` | 日报生成主脚本（六板块） |
-| `validate_report.py` | 格式验证脚本 |
-| `scripts/attendance_analysis.py` | 时段考勤分析 |
-| `scripts/level_analysis.py` | 档位达成分析 |
-| `scripts/focus_analysis.py` | 重点跟进分析 |
-| `scripts/fetch_aeolus_data.py` | Aeolus 数据获取 |
-| `references/*.md` | 标准/规则参考文档 |
+| `generate_report.py` | 日报生成主入口（六板块） |
+| `validate_report.py` | 格式校验，跑通才算生成成功 |
+| `scripts/attendance_analysis.py` | 各时段出勤率、达标率计算 |
+| `scripts/level_analysis.py` | 档位分布、接近升级骑手 |
+| `scripts/focus_analysis.py` | 冲三档+全部升档机会 |
+| `scripts/fetch_aeolus_data.py` | Aeolus 数据解析 |
+
+## 日报六板块
+
+1. **全天达成** — 谁达基线（≥6h & ≥18单），谁没达
+2. **时段未达标** — 9个时段的出勤、达标情况
+3. **档位达成** — 各档位分布 + 接近升级骑手 + 低于基线名单
+4. **重点跟进** — 冲三档 + 全部升档机会 + 汇总
+5. **0-2档不够明细** — 低档骑手到下一档还差多少
+6. **档位明细** — 每位骑手到下一档的差距明细
+
+## 技术栈
+
+- Python 3 + openpyxl
+- 输出 WPS 兼容格式
+- 配色、字体、对齐等已适配 WPS 办公
