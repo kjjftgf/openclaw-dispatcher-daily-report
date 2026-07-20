@@ -1,6 +1,6 @@
 # 数据日报生成器
 
-自动分析 Aeolus 实时出勤数据，生成骑手当日业绩达标报告（.xlsx）
+自动分析九州风神实时出勤数据，生成骑手当日业绩达标报告（.xlsx）
 
 ## 这是干嘛的
 
@@ -16,7 +16,7 @@
 
 ## 数据来源
 
-从 Aeolus 网页手动导出：
+从九州风神网页手动导出：
 - 实时出勤数据 → `~/Downloads/2026-MM-DD_HH_MM_SS实时出勤数据.xlsx`
 - 排班数据 → `~/Downloads/2026-MM-DD到2026-MM-DD排班数据.xlsx`
 
@@ -44,7 +44,7 @@ python3 validate_report.py
 | `scripts/attendance_analysis.py` | 各时段出勤率、达标率计算 |
 | `scripts/level_analysis.py` | 档位分布、接近升级骑手 |
 | `scripts/focus_analysis.py` | 冲三档+全部升档机会 |
-| `scripts/fetch_aeolus_data.py` | Aeolus 数据解析 |
+| `scripts/fetch_aeolus_data.py` | 九州风神数据解析 |
 
 ## 日报六板块
 
